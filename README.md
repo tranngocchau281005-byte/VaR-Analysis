@@ -1,4 +1,3 @@
-# Quantitative-Finance-and-Risk-Management-Projects
 # Financial Risk Management – VSC Value at Risk Analysis
 
 ## Overview
