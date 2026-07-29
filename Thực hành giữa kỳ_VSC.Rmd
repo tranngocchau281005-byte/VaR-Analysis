@@ -1,0 +1,213 @@
+---
+title: "Thực hành bài giữa kỳ"
+author: "Trần Ngọc Châu - 030139230038"
+date: "2026-06-10"
+output: html_document
+---
+
+#### BÀI THỰC HÀNH KIỂM TRA GIỮA KỲ MÔN QUẢN TRỊ RỦI RO TÀI CHÍNH
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  warning = FALSE,   
+  message = FALSE,   
+  comment = NA       
+)
+```
+
+1. Đọc dữ liệu từ link google sheet
+
+```{r}
+library(googlesheets4)
+gs4_deauth()
+df <- read_sheet("https://docs.google.com/spreadsheets/d/10nZIVWn3i5djs0tRZbI--8nntNbfbGoNvYKX8yI7Eeo/edit?gid=1870826978#gid=1870826978", sheet = "hose3")
+```
+
+2. Lấy dữ liệu VSC
+```{r}
+df
+vsc <- df[, c("Date", "VSC")]
+vsc
+```
+
+3. Kiểm tra dữ liệu
+
+```{r}
+str(vsc)
+head(vsc)
+tail(vsc)
+summary(vsc)
+```
+
+4.1. Thống kê mô tả dữ liệu giá chứng khoán
+
+```{r}
+library(fBasics)
+basicStats(vsc$VSC) # cách 1
+summary(vsc$VSC) # cách 2
+```
+
+4.2. Thống kê mô tả dữ liệu return của giá chứng khoán
+
+```{r}
+return_vsc <- diff(log(vsc$VSC)) 
+head(return_vsc) 
+tail(return_vsc)
+basicStats(return_vsc)
+summary(return_vsc)
+```
+
+5.1. Vẽ đồ thị và hàm mật độ giá chứng khoán
+
+```{r}
+ts.plot(vsc$VSC) # cách 1: đồ thị giá
+plot(vsc$VSC, type = "l") # cách 2: đồ thị giá
+hist(vsc$VSC)
+d1 = density(vsc$VSC)
+plot(d1, type = "l")
+```
+
+5.2. Vẽ đồ thị và hàm mật độ của return giá chứng khoán
+
+```{r}
+plot(return_vsc, type = "l")
+hist(return_vsc)
+d2 = density(return_vsc)
+plot(d2, type = "l")
+```
+
+6. Kiểm tra tính dừng, kiểm tra phân phối chuẩn
+
+```{r}
+library(tseries)
+adf.test(vsc$VSC)
+adf.test(return_vsc)
+kpss.test(return_vsc) # H0: stationary
+normalTest(vsc$VSC, method = c("jb")) # H0: normal distribution
+normalTest(return_vsc, method = c("jb")) # H0: normal distribution
+
+```
+
+7. Kiểm tra tự tương quan bằng đồ thị và bằng kiểm định
+
+```{r}
+acf(return_vsc) 
+pacf(return_vsc) 
+Box.test(return_vsc, lag = 10) # H0: no autocorrelation
+Box.test(return_vsc, lag = 10, type = c("Ljung-Box")) # H0: no autocorrelation
+```
+
+8. Ước lượng mô hình ARIMA
+
+```{r}
+# 8.1. Xây dựng mô hình AR
+pacf(return_vsc)
+m1 <- ar(return_vsc, method = c("mle"))
+m1
+m1$aic
+
+# Ước lượng AR(p)
+m21 <- arima(return_vsc, order = c(1, 0, 0))
+m21
+m22 <- arima(return_vsc, order = c(15, 0, 0))
+m22
+AIC(m21,m22)
+
+# hàm tính p-value
+coeftest <- function(model){
+          coef <- model$coef
+          se <- sqrt(diag(model$var.coef))
+          t <- coef / se
+          p <- 2 * (1 - pnorm(abs(t)))
+          data.frame(coef, se, t, p)
+        }
+coeftest(m21)
+coeftest(m22)
+
+# Kiểm định phần dư
+plot(m21$residuals, type = 'l')
+qqplot(m21$residuals, return_vsc)
+Box.test(m21$residuals, lag = 10) 
+Box.test(m22$residuals, lag = 10)
+```
+
+9.1. Kiểm định hiệu ứng ARCH (ARCH-LM test)
+
+```{r}
+library(fGarch)
+m3 <- garchFit(~ arma(1,0) + garch(1,0), data = return_vsc, trace = FALSE)
+summary(m3)
+```
+
+9.2. Ước lượng ARIMA+GARCH
+
+```{r}
+m4 <-garchFit(~ arma(1,0) + garch(1,1), data = return_vsc, trace = FALSE)
+summary(m4)
+predict(m4, 5)
+```
+
+10. Tính và dự báo VaR
+
+```{r}
+# Chạy hàm loss để tính VaR
+nreturn_vsc <- -return_vsc
+
+# 10.1. Ước tính VaR theo RISK METRICS
+# Cách 1: tính thủ công
+library(rugarch)
+spec1 <- ugarchspec(mean.model = list(armaOrder=c(1,0)),
+                    variance.model = list(model="iGARCH", garchOrder=c(1,1)))
+
+m5 <- ugarchfit(spec=spec1,data = nreturn_vsc)
+Box.test(residuals(m5, standardize=TRUE), lag=10, type="Ljung")
+
+ugarchforecast(m5, n.ahead = 1)
+
+# Tính VaR (Phương pháp của JP Morgan xem mean = 0): 
+VaR1 <- 0 + qnorm(0.95) * 0.01901
+
+# Cách 2: tính từ RMeasure.R
+setwd("C:/Users/Chau/OneDrive - THPT Nguyễn Công Trứ/Attachments/QTRRTC")
+
+source("RMeasure.R")
+VaR2 <- RMeasure(0, 0.01901)
+
+# 10.2. Ước tính VaR theo ECONOMICTRICS
+m6 <- garchFit(~ arma(1,0) + garch(1,1), data = nreturn_vsc, trace=F)
+summary(m6)
+predict(m6, 1)
+
+# Tính VaR
+VaR3 <- -0.000661372	+ qnorm(0.95)*0.01833114	
+VaR3
+
+# 10.3. Ước lượng QUANTILE ESTIMATION
+VaR4 <- quantile(nreturn_vsc, 0.95)
+VaR4
+
+# 10.4. Ước lượng MONTE CARLO SIMULATION
+mean_vsc <- mean(nreturn_vsc)
+sd_vsc <- sd(nreturn_vsc)
+
+# Tiến hành mô phỏng Monte Carlo
+set.seed(42)
+sim1 <- rnorm(10000, mean = mean_vsc, sd = sd_vsc)
+ts.plot(sim1)
+VaR5 <- quantile(sim1, 0.95)
+VaR5
+```
+
+11. VaR theo số tiền
+
+```{r}
+VaR1_100 = VaR1*100000
+VaR1_100
+VaR3_100 = VaR3*100000
+VaR3_100
+VaR4_100 = VaR4*100000
+VaR4_100
+VaR5_100 = VaR5*100000
+VaR5_100
+```
