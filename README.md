@@ -29,8 +29,7 @@ This project is a midterm assignment for the **Financial Risk Management** cours
 * fGarch
 * rugarch
 
-## Repository Contents
+## Report
 
-* `Financial_Risk_Management_Midterm.Rmd` – Source code and analysis
-* Report: https://tranngocchau281005-byte.github.io/Quantitative-Finance-and-Risk-Management-Projects/ 
+ https://tranngocchau281005-byte.github.io/Quantitative-Finance-and-Risk-Management-Projects/ 
 
