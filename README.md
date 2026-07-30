@@ -16,8 +16,8 @@ This project is a midterm assignment for the **Financial Risk Management** cours
 * Value at Risk (VaR) Estimation:
 
   * RiskMetrics
-  * ARIMA + GARCH
-  * Historical Simulation
+  * Econometrics 
+  * Quartile Simulation
   * Monte Carlo Simulation
 
 ## Tools
