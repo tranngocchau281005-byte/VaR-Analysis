@@ -1,4 +1,4 @@
-# Financial Risk Management – VSC Value at Risk Analysis
+# VSC - Value at Risk Analysis
 
 ## Overview
 
