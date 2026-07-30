@@ -32,9 +32,5 @@ This project is a midterm assignment for the **Financial Risk Management** cours
 ## Repository Contents
 
 * `Financial_Risk_Management_Midterm.Rmd` – Source code and analysis
-* `Financial_Risk_Management_Midterm.html` – Generated report
-* `README.md` – Project overview
+* https://tranngocchau281005-byte.github.io/Quantitative-Finance-and-Risk-Management-Projects/ – Generated report
 
-## Skills Demonstrated
-
-Financial Time Series Analysis • Risk Modeling • ARIMA • GARCH • Value at Risk (VaR) • Statistical Analysis • R Programming
