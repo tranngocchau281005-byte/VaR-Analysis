@@ -8,7 +8,7 @@ This project is a midterm assignment for the **Financial Risk Management** cours
 ## Methods
 
 * Descriptive Statistics
-* Log Return Analysis
+* Return Analysis
 * Stationarity Testing (ADF & KPSS)
 * Normality Testing (Jarque–Bera)
 * Autocorrelation Analysis (ACF, PACF & Ljung–Box)
