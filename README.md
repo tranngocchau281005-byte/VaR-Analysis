@@ -9,18 +9,18 @@ This project is a midterm assignment for the **Financial Risk Management** cours
 
 * Descriptive Statistics
 * Log Return Analysis
-* Stationarity Tests (ADF & KPSS)
-* Jarque–Bera Normality Test
-* Autocorrelation Analysis (ACF, PACF, Ljung–Box)
+* Stationarity Testing (ADF & KPSS)
+* Normality Testing (Jarque–Bera)
+* Autocorrelation Analysis (ACF, PACF & Ljung–Box)
 * ARIMA Modeling
 * GARCH Modeling
 * Value at Risk (VaR) Estimation:
 
   * RiskMetrics
-  * Econometrics 
-  * Quartile Simulation
+  * Econometric
+  * Quantile Simulation
   * Monte Carlo Simulation
-
+ 
 ## Tools
 
 * R
