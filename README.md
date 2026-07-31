@@ -2,7 +2,8 @@
 
 ## Overview
 
-This project is a midterm assignment for the **Financial Risk Management** course. It analyzes historical stock price data of **Vietnam Container Shipping Corporation (VSC)** to examine return characteristics, model volatility, and estimate **Value at Risk (VaR)** using multiple quantitative methods in R.
+This project is a midterm assignment for the **Financial Risk Management** course. It analyzes historical stock price data of **Vietnam Container Shipping Corporation (VSC)** and estimates **Value at Risk (VaR)** using multiple quantitative methods in R.
+
 
 ## Methods
 
