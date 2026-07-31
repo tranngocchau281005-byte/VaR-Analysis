@@ -31,4 +31,4 @@ This project is a midterm assignment for the **Financial Risk Management** cours
 
 ## Report
 
-https://tranngocchau281005-byte.github.io/VaR-Analysis/
+[View HTML Report] https://tranngocchau281005-byte.github.io/VaR-Analysis/
