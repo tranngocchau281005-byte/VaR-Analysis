@@ -1,4 +1,4 @@
-# VSC - Value at Risk Analysis
+# Value at Risk Analysis
 
 ## Overview
 
